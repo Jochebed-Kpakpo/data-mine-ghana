@@ -84,6 +84,7 @@
         </div>
         <ul><li>Track the fastest-growing supply sources</li><li>Identify underrepresented technologies</li><li>Combine with tariffs, demand and project data before investing</li></ul>
         <small>Energy-supply statistics are a screening signal, not investment advice.</small>
+        <a class="open-workspace" id="audience-page-link" href="investor.html">Open the Investor Intelligence page <span aria-hidden="true">→</span></a>
       </div>
     </section>
 
@@ -118,8 +119,13 @@
       <div class="filter-bar" aria-label="Dashboard filters">
         <label>Metric<select id="metric-select"><option value="value">Supply (ktoe)</option><option value="share">Share of total (%)</option><option value="growth">Annual growth (%)</option></select></label>
         <label>Chart<select id="chart-select"><option value="area">Area</option><option value="line">Line</option><option value="bar">Columns</option></select></label>
-        <label>From<select id="from-year"></select></label>
-        <label>To<select id="to-year"></select></label>
+        <div class="range-filter">
+          <div><span>Time window</span><strong id="range-label">2000–2024</strong></div>
+          <div class="dual-range" aria-label="Select year range">
+            <input id="from-year" type="range" min="2000" max="2024" value="2000" aria-label="Start year">
+            <input id="to-year" type="range" min="2000" max="2024" value="2024" aria-label="End year">
+          </div>
+        </div>
         <button id="reset-filters" type="button">Reset filters</button>
       </div>
 
