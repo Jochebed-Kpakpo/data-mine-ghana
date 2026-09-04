@@ -2,151 +2,30 @@ const DATA = [
   [2000,1688,0,568,0,4410,6666],[2001,1761,0,568,0,4236,6565],[2002,2277,0,433,0,4135,6845],[2003,2347,0,334,0,4009,6691],[2004,2094,0,454,0,4041,6589],[2005,2103,0,484,0,4030,6617],[2006,2908,0,483,0,4047,7437],[2007,3082,0,320,0,4036,7438],[2008,2862,0,533,0,3975,7370],[2009,2390,5,591,0,3975,6961],[2010,2934,416,601,0,3903,7855],[2011,2874,813,650,0,3918,8255],[2012,3467,412,694,0,4137,8710],[2013,4137,308,708,0,4485,9639],[2014,4061,655,721,0,4614,10051],[2015,3766,1253,503,0,4738,10260],[2016,4613,732,478,2,4868,10694],[2017,3998,1211,483,2,5066,10761],[2018,4276,1676,517,3,5015,11488],[2019,4395,2107,624,4,4942,12072],[2020,4305,3014,627,5,4822,12773],[2021,4470,3189,647,11,4275,12591],[2022,4152,3472,704,14,4073,12416],[2023,4642,3487,790,13,4043,12975],[2024,4943,3906,851,16,4026,13741]
 ];
 const SERIES = [
-  { name: "Oil", index: 1, color: "#d86b45" },
-  { name: "Natural gas", index: 2, color: "#287eae" },
-  { name: "Hydro", index: 3, color: "#534eb3" },
-  { name: "Solar", index: 4, color: "#d79f16" },
-  { name: "Biomass", index: 5, color: "#18845c" }
+  { id:"oil", name:"Oil", index:1, color:"#d86b45", icon:"OIL", story:"Oil remained Ghana’s largest source in 2024. Its long-run growth signals sustained demand, while year-to-year movement highlights exposure to supply conditions and global prices.", questions:["How exposed are returns to crude and product prices?","Which demand sectors are driving consumption?","What policy or currency risks affect costs?"] },
+  { id:"gas", name:"Natural gas", index:2, color:"#287eae", icon:"GAS", story:"Natural gas moved from virtually no reported supply before 2009 to 28.4% of the mix in 2024, the strongest structural change in the series.", questions:["Is domestic supply keeping pace with demand?","What infrastructure constrains delivery?","How sensitive are projects to gas pricing and availability?"] },
+  { id:"hydro", name:"Hydro", index:3, color:"#534eb3", icon:"HYD", story:"Hydro supply fluctuated across the period and reached a series high in 2024. Its performance should be read alongside rainfall, reservoir levels and system reliability.", questions:["How variable is output across hydrological cycles?","What refurbishment or expansion is planned?","How does hydro complement solar and thermal power?"] },
+  { id:"solar", name:"Solar", index:4, color:"#d79f16", icon:"SOL", story:"Solar first appears in this national supply series in 2016 and increased eightfold by 2024. Its share remains only 0.11%, making scale, grid integration and project economics central questions.", questions:["What capacity is operating versus planned?","What tariffs, PPAs and incentives shape revenue?","Where are grid access and storage most valuable?"] },
+  { id:"biomass", name:"Biomass", index:5, color:"#18845c", icon:"BIO", story:"Biomass supply declined modestly in absolute terms but sharply as a share of the expanding system, falling from 66.2% in 2000 to 29.3% in 2024.", questions:["How much use is traditional versus modern biomass?","Where can clean cooking create measurable value?","Are feedstock supply chains sustainable and bankable?"] }
 ];
-const state = { mode: "value", start: 2000, active: new Set(SERIES.map(s => s.name)) };
-const svg = document.querySelector("#energy-chart");
-const controls = document.querySelector(".source-controls");
-const tooltip = document.querySelector("#tooltip");
-const NS = "http://www.w3.org/2000/svg";
-
-const LENSES = {
-  investor: { kicker: "INVESTMENT SIGNAL", title: "Demand growth is clear. The opportunity is in how future supply is met.", body: "Total energy supply increased by 106% between 2000 and 2024. Solar’s reported contribution remains very small, signalling room for deeper investigation into renewable generation, grid readiness, financing and project pipelines.", points: ["Track the fastest-growing supply sources", "Identify underrepresented technologies", "Combine with tariffs, demand and project data before investing"], note: "Energy-supply statistics are a screening signal, not investment advice." },
-  policy: { kicker: "POLICY QUESTION", title: "Can supply growth become cleaner, more resilient and more inclusive?", body: "The mix is more diversified than it was in 2000, but fossil sources now account for almost two-thirds of supply. Biomass remains significant and solar remains small, making clean cooking, renewable scale-up and system resilience important policy questions.", points: ["Monitor fossil-fuel concentration and exposure", "Connect biomass trends to clean-cooking outcomes", "Measure whether renewable policy is changing the mix"], note: "This dataset describes supply; policy evaluation requires access, affordability and reliability indicators too." },
-  student: { kicker: "LEARNING PATH", title: "This is a real-world example of an energy transition in motion.", body: "The series shows that transitions are not simple replacements. Ghana added natural gas, retained substantial oil and biomass use, and grew hydro and solar at different speeds while total demand expanded.", points: ["Compare absolute supply with percentage share", "Relate turning points to historical events", "Use the downloadable data for assignments and projects"], note: "Start with the chart, then consult the original bulletin for definitions and wider context." },
-  analyst: { kicker: "ANALYTICAL STARTING POINT", title: "A traceable series ready for comparison, modelling and extension.", body: "The structured dataset retains year, source, unit and publication provenance. Analysts can reproduce the displayed shares, calculate growth rates and join the series with GDP, population, prices, emissions or capacity data.", points: ["Download a tidy, machine-readable CSV", "Reproduce every derived figure", "Return to the cited table and page for verification"], note: "Document revisions and methodological changes should be checked before combining editions." }
+const AUDIENCES = {
+  investor:{kicker:"INVESTMENT INTELLIGENCE",title:"Growth reveals opportunity. Bankability needs a second layer of evidence.",body:"Ghana’s total energy supply expanded 106% since 2000. Gas scaled rapidly, oil remains dominant and solar is still a small part of national supply. These are market signals, but capital decisions also require tariffs, demand forecasts, project pipelines, regulation, currency exposure and grid constraints.",metrics:[["Market expansion","+106%","Total supply, 2000–2024"],["Recent momentum","+5.9%","Total supply, 2023–2024"],["Solar position","0.11%","Share of 2024 supply"],["Oil + gas exposure","64.4%","Share of 2024 supply"]],points:["Use source profiles to identify growth and volatility","Test revenue assumptions against tariffs and offtaker risk","Combine supply data with capacity, demand, prices and policy"],note:"Screening intelligence only. It is not financial or investment advice."},
+  policy:{kicker:"POLICY INTELLIGENCE",title:"A more diverse system still faces questions of resilience, affordability and transition speed.",body:"Fossil sources supplied almost two-thirds of the 2024 mix. Biomass remains substantial, while solar accounted for 0.11%. Policy analysis should connect this supply picture to electricity access, clean cooking, affordability, emissions and reliability.",metrics:[["Fossil share","64.4%","Oil and gas, 2024"],["Biomass share","29.3%","Down from 66.2%"],["Solar share","0.11%","National supply, 2024"],["System growth","3.1%","Long-run annual rate"]],points:["Track whether policies materially change the mix","Connect biomass use to clean-cooking outcomes","Plan diversification alongside reliability and affordability"],note:"Supply composition alone does not measure policy success."},
+  student:{kicker:"LEARNING INTELLIGENCE",title:"See how an energy transition unfolds through addition, substitution and demand growth.",body:"Ghana did not simply replace one fuel with another. Total supply expanded while gas emerged, oil grew, hydro fluctuated, solar entered slowly and biomass lost relative share. Toggle between ktoe, share and annual growth to see why the chosen metric changes the story.",metrics:[["Time span","25 years","2000–2024"],["Energy sources","5","Comparable series"],["Unit","ktoe","Thousand tonnes oil equivalent"],["Open format","CSV","Ready for analysis"]],points:["Compare absolute growth with changing market share","Investigate historical events behind turning points","Download the data to reproduce each calculation"],note:"Consult the source bulletin for definitions and methodological notes."},
+  analyst:{kicker:"ANALYTICAL INTELLIGENCE",title:"A reproducible series with provenance, consistent fields and exportable views.",body:"Each observation retains its year, energy source, reported value and total. The interface derives shares, annual growth and period statistics without changing the underlying record.",metrics:[["Observations","125","25 years × 5 sources"],["Coverage","2000–2024","Annual frequency"],["Provenance","Table 2.1","Source page 3"],["Export","Filtered CSV","Selected source and period"]],points:["Export exactly the filtered series you are viewing","Verify calculations against the cited source table","Join with GDP, population, price, emissions or capacity data"],note:"Check revisions and methodology before combining different bulletin editions."}
 };
-
-document.querySelectorAll(".lens-tabs button").forEach(button => button.addEventListener("click", () => {
-  document.querySelectorAll(".lens-tabs button").forEach(item => item.setAttribute("aria-selected", String(item === button)));
-  const lens = LENSES[button.dataset.lens];
-  const panel = document.querySelector(".lens-panel");
-  panel.innerHTML = `<p class="lens-kicker">${lens.kicker}</p><h3>${lens.title}</h3><p>${lens.body}</p><ul>${lens.points.map(point => `<li>${point}</li>`).join("")}</ul><small>${lens.note}</small>`;
-  panel.focus();
-}));
-
-SERIES.forEach(series => {
-  const button = document.createElement("button");
-  button.type = "button";
-  button.setAttribute("aria-pressed", "true");
-  button.innerHTML = `<i style="background:${series.color}"></i>${series.name}`;
-  button.addEventListener("click", () => {
-    state.active.has(series.name) ? state.active.delete(series.name) : state.active.add(series.name);
-    button.setAttribute("aria-pressed", String(state.active.has(series.name)));
-    draw();
-  });
-  controls.append(button);
-});
-
-document.querySelectorAll(".metric-toggle button").forEach(button => {
-  button.addEventListener("click", () => {
-    state.mode = button.dataset.mode;
-    document.querySelectorAll(".metric-toggle button").forEach(item => {
-      const selected = item === button;
-      item.classList.toggle("active", selected);
-      item.setAttribute("aria-pressed", String(selected));
-    });
-    draw();
-  });
-});
-
-document.querySelector("#start-year").addEventListener("input", event => {
-  state.start = Number(event.target.value);
-  document.querySelector("#start-output").value = state.start;
-  document.querySelector("#range-summary").textContent = `Showing ${state.start}–2024`;
-  draw();
-});
-
-function add(type, attributes, parent = svg) {
-  const element = document.createElementNS(NS, type);
-  Object.entries(attributes).forEach(([key, value]) => element.setAttribute(key, value));
-  parent.append(element);
-  return element;
-}
-
-function draw() {
-  svg.replaceChildren();
-  const rows = DATA.filter(row => row[0] >= state.start);
-  const margin = { top: 24, right: 24, bottom: 42, left: 64 };
-  const width = 1000 - margin.left - margin.right;
-  const height = 440 - margin.top - margin.bottom;
-  const max = state.mode === "share" ? 70 : Math.ceil(Math.max(...rows.flatMap(row => SERIES.map(s => row[s.index]))) / 1000) * 1000;
-  const x = year => margin.left + ((year - rows[0][0]) / Math.max(1, rows.at(-1)[0] - rows[0][0])) * width;
-  const value = (row, series) => state.mode === "share" ? (row[series.index] / row[6]) * 100 : row[series.index];
-  const y = val => margin.top + height - (val / max) * height;
-
-  for (let step = 0; step <= 4; step++) {
-    const val = max * step / 4;
-    const py = y(val);
-    add("line", { x1: margin.left, y1: py, x2: 1000 - margin.right, y2: py, class: "grid-line" });
-    const label = add("text", { x: margin.left - 12, y: py + 4, "text-anchor": "end", class: "axis-label" });
-    label.textContent = state.mode === "share" ? `${val.toFixed(0)}%` : val.toLocaleString();
-  }
-  rows.forEach((row, index) => {
-    if (index % Math.max(1, Math.ceil(rows.length / 6)) === 0 || index === rows.length - 1) {
-      const label = add("text", { x: x(row[0]), y: 426, "text-anchor": "middle", class: "axis-label" });
-      label.textContent = row[0];
-    }
-  });
-
-  SERIES.filter(series => state.active.has(series.name)).forEach(series => {
-    const points = rows.map(row => `${x(row[0])},${y(value(row, series))}`).join(" ");
-    add("polyline", { points, stroke: series.color, class: "series-line" });
-    const hit = add("polyline", { points, class: "hit-line", tabindex: "0", "aria-label": `${series.name} series` });
-    const show = event => {
-      const rect = svg.getBoundingClientRect();
-      const relativeX = (event.clientX - rect.left) / rect.width * 1000;
-      const closest = rows.reduce((best, row) => Math.abs(x(row[0]) - relativeX) < Math.abs(x(best[0]) - relativeX) ? row : best, rows[0]);
-      const val = value(closest, series);
-      tooltip.innerHTML = `<strong>${series.name} · ${closest[0]}</strong><span>${state.mode === "share" ? val.toFixed(1) + "%" : Math.round(val).toLocaleString() + " ktoe"}</span>`;
-      tooltip.hidden = false;
-      tooltip.style.left = `${x(closest[0]) / 10}%`;
-      tooltip.style.top = `${y(val) / 4.4}%`;
-    };
-    hit.addEventListener("mousemove", show);
-    hit.addEventListener("mouseleave", () => tooltip.hidden = true);
-    hit.addEventListener("focus", () => {
-      const latest = rows.at(-1), val = value(latest, series);
-      tooltip.innerHTML = `<strong>${series.name} · ${latest[0]}</strong><span>${state.mode === "share" ? val.toFixed(1) + "%" : Math.round(val).toLocaleString() + " ktoe"}</span>`;
-      tooltip.hidden = false;
-      tooltip.style.left = `${x(latest[0]) / 10}%`;
-      tooltip.style.top = `${y(val) / 4.4}%`;
-    });
-    hit.addEventListener("blur", () => tooltip.hidden = true);
-  });
-}
-draw();
-
-function drawOverview() {
-  const totalSvg = document.querySelector("#total-chart");
-  const max = 14000, margin = { left: 30, right: 18, top: 22, bottom: 30 }, width = 700 - margin.left - margin.right, height = 280 - margin.top - margin.bottom;
-  const x = year => margin.left + (year - 2000) / 24 * width;
-  const y = value => margin.top + height - value / max * height;
-  [0, 7000, 14000].forEach(value => {
-    const line = document.createElementNS(NS, "line");
-    Object.entries({ x1: margin.left, y1: y(value), x2: 682, y2: y(value), class: "grid-line" }).forEach(([k,v]) => line.setAttribute(k,v));
-    totalSvg.append(line);
-  });
-  const area = document.createElementNS(NS, "path");
-  const points = DATA.map(row => `${x(row[0])},${y(row[6])}`).join(" L ");
-  area.setAttribute("d", `M ${x(2000)},${y(0)} L ${points} L ${x(2024)},${y(0)} Z`);
-  area.setAttribute("class", "total-area"); totalSvg.append(area);
-  const line = document.createElementNS(NS, "path"); line.setAttribute("d", `M ${points}`); line.setAttribute("class", "total-line"); totalSvg.append(line);
-  [2000, 2012, 2024].forEach(year => { const text = document.createElementNS(NS, "text"); text.setAttribute("x", x(year)); text.setAttribute("y", 272); text.setAttribute("text-anchor", "middle"); text.setAttribute("class", "axis-label"); text.textContent = year; totalSvg.append(text); });
-
-  const latest = DATA.at(-1), colors = SERIES.map(s => s.color), stops = []; let cursor = 0;
-  SERIES.forEach((series, i) => { const share = latest[series.index] / latest[6] * 100; stops.push(`${colors[i]} ${cursor}% ${cursor + share}%`); cursor += share; });
-  document.querySelector(".donut").style.background = `conic-gradient(${stops.join(",")})`;
-  document.querySelector(".mix-legend").innerHTML = SERIES.map(series => `<li><i style="background:${series.color}"></i><span>${series.name}</span><strong>${(latest[series.index]/latest[6]*100).toFixed(1)}%</strong></li>`).join("");
-
-  const first = DATA[0];
-  document.querySelector("#shift-bars").innerHTML = SERIES.map(series => {
-    const oldShare = first[series.index] / first[6] * 100, newShare = latest[series.index] / latest[6] * 100;
-    return `<div class="shift-row"><span>${series.name}</span><div class="bar-pair"><i style="width:${oldShare}%;background:#cbd5d0"></i><i style="width:${newShare}%;background:${series.color}"></i></div><small>${oldShare.toFixed(1)}% → ${newShare.toFixed(1)}%</small></div>`;
-  }).join("");
-}
-drawOverview();
+const NS="http://www.w3.org/2000/svg",state={source:"solar",metric:"value",chart:"area",from:2000,to:2024},$=s=>document.querySelector(s);
+function pct(v,t){return t?v/t*100:0}
+function metricValue(row,s,prev){if(state.metric==="share")return pct(row[s.index],row[6]);if(state.metric==="growth")return prev&&prev[s.index]?(row[s.index]/prev[s.index]-1)*100:null;return row[s.index]}
+function formatMetric(v){if(v===null||!Number.isFinite(v))return"—";return state.metric==="value"?`${Math.round(v).toLocaleString()} ktoe`:`${v.toFixed(1)}%`}
+function svgEl(type,attrs,parent){const el=document.createElementNS(NS,type);Object.entries(attrs).forEach(([k,v])=>el.setAttribute(k,v));parent.append(el);return el}
+function initSourceNav(){const nav=$(".source-nav");SERIES.forEach(s=>{const b=document.createElement("button");b.type="button";b.dataset.source=s.id;b.setAttribute("role","tab");b.innerHTML=`<i style="--source:${s.color}">${s.icon}</i><span>${s.name}</span>`;b.onclick=()=>{state.source=s.id;renderProfile()};nav.append(b)});["from-year","to-year"].forEach((id,i)=>{const select=$("#"+id);DATA.forEach(r=>select.add(new Option(r[0],r[0])));select.value=i?2024:2000;select.onchange=()=>{state[i?"to":"from"]=+select.value;if(state.from>state.to){state[i?"from":"to"] = +select.value;$(i?"#from-year":"#to-year").value=select.value}renderProfile()}});$("#metric-select").onchange=e=>{state.metric=e.target.value;renderProfile()};$("#chart-select").onchange=e=>{state.chart=e.target.value;renderProfile()};$("#reset-filters").onclick=()=>{Object.assign(state,{source:"solar",metric:"value",chart:"area",from:2000,to:2024});$("#metric-select").value="value";$("#chart-select").value="area";$("#from-year").value=2000;$("#to-year").value=2024;renderProfile()};$("#toggle-table").onclick=e=>{const w=$(".data-table-wrap"),open=w.hidden;w.hidden=!open;e.currentTarget.setAttribute("aria-expanded",open);e.currentTarget.textContent=open?"Hide underlying data":"View underlying data"};$("#export-filtered").onclick=exportView}
+function renderProfile(){const s=SERIES.find(x=>x.id===state.source),rows=DATA.filter(r=>r[0]>=state.from&&r[0]<=state.to);document.documentElement.style.setProperty("--active-source",s.color);document.querySelectorAll(".source-nav button").forEach(b=>{const a=b.dataset.source===s.id;b.setAttribute("aria-selected",a);b.classList.toggle("active",a)});$("#profile-kicker").textContent=`${s.name.toUpperCase()} PROFILE`;$("#profile-title").textContent=`${s.name} energy supply`;$("#profile-story").textContent=s.story;$("#decision-title").textContent=`Questions ${s.name.toLowerCase()} data should help answer`;$("#decision-content").innerHTML=s.questions.map((q,i)=>`<div class="decision-question"><span>0${i+1}</span><p>${q}</p></div>`).join("")+`<p class="data-gap"><strong>Next evidence layer</strong> Add prices, capacity, project pipeline, policy and reliability data before drawing a financial conclusion.</p>`;const latest=rows.at(-1),firstPositive=rows.find(r=>r[s.index]>0),peak=rows.reduce((a,b)=>a[s.index]>b[s.index]?a:b),previous=DATA[DATA.indexOf(latest)-1],years=firstPositive&&latest[0]-firstPositive[0],cagr=years&&firstPositive[s.index]>0?(Math.pow(latest[s.index]/firstPositive[s.index],1/years)-1)*100:null,yoy=previous&&previous[s.index]?(latest[s.index]/previous[s.index]-1)*100:null;$(".profile-kpis").innerHTML=`<article><span>Latest supply</span><strong>${latest[s.index].toLocaleString()}</strong><small>ktoe · ${latest[0]}</small></article><article><span>Latest share</span><strong>${pct(latest[s.index],latest[6]).toFixed(2)}%</strong><small>of total supply</small></article><article><span>Annual change</span><strong>${yoy===null?"—":`${yoy>=0?"+":""}${yoy.toFixed(1)}%`}</strong><small>versus prior year</small></article><article><span>Growth rate</span><strong>${cagr===null?"—":`${cagr>=0?"+":""}${cagr.toFixed(1)}%`}</strong><small>annualised since ${firstPositive?firstPositive[0]:state.from}</small></article><article><span>Peak supply</span><strong>${peak[s.index].toLocaleString()}</strong><small>ktoe · ${peak[0]}</small></article>`;$("#chart-caption").textContent=`${s.name}: ${{value:"supply",share:"share of total",growth:"annual growth"}[state.metric]}`;$("#chart-period").textContent=`${state.from}–${state.to}`;drawProfileChart(rows,s);renderTable(rows,s)}
+function drawProfileChart(rows,s){const svg=$("#energy-chart"),tip=$("#tooltip");svg.replaceChildren();const m={t:28,r:24,b:48,l:75},w=1000-m.l-m.r,h=440-m.t-m.b,values=rows.map(r=>metricValue(r,s,DATA[DATA.indexOf(r)-1])).filter(v=>v!==null);let min=state.metric==="growth"?Math.min(0,...values):0,max=Math.max(...values,1);if(min===max)max=min+1;const pad=(max-min)*.12;max+=pad;if(min<0)min-=pad;const x=year=>m.l+(year-state.from)/Math.max(1,state.to-state.from)*w,y=v=>m.t+h-(v-min)/(max-min)*h;for(let i=0;i<=4;i++){const val=min+(max-min)*i/4,py=y(val);svgEl("line",{x1:m.l,y1:py,x2:1000-m.r,y2:py,class:"grid-line"},svg);const t=svgEl("text",{x:m.l-13,y:py+4,"text-anchor":"end",class:"axis-label"},svg);t.textContent=state.metric==="value"?Math.round(val).toLocaleString():`${val.toFixed(0)}%`}const plotted=rows.map(r=>({row:r,val:metricValue(r,s,DATA[DATA.indexOf(r)-1])})).filter(p=>p.val!==null);if(state.chart==="bar")plotted.forEach(p=>{const bw=Math.max(7,w/rows.length*.58),base=y(Math.max(0,min));svgEl("rect",{x:x(p.row[0])-bw/2,y:Math.min(y(p.val),base),width:bw,height:Math.max(1,Math.abs(base-y(p.val))),rx:3,fill:s.color,class:"animated-bar"},svg)});else if(plotted.length){const points=plotted.map(p=>`${x(p.row[0])},${y(p.val)}`).join(" L ");if(state.chart==="area")svgEl("path",{d:`M ${x(plotted[0].row[0])},${y(Math.max(0,min))} L ${points} L ${x(plotted.at(-1).row[0])},${y(Math.max(0,min))} Z`,fill:s.color,class:"profile-area"},svg);svgEl("path",{d:`M ${points}`,stroke:s.color,class:"profile-line"},svg)}plotted.forEach(p=>{const d=svgEl("circle",{cx:x(p.row[0]),cy:y(p.val),r:6,fill:s.color,class:"data-dot",tabindex:0},svg),show=()=>{tip.hidden=false;tip.style.left=`${x(p.row[0])/10}%`;tip.style.top=`${y(p.val)/4.4}%`;tip.innerHTML=`<strong>${s.name} · ${p.row[0]}</strong><span>${formatMetric(p.val)}</span>`};d.onmouseenter=d.onfocus=show;d.onmouseleave=d.onblur=()=>tip.hidden=true});[state.from,Math.round((state.from+state.to)/2),state.to].filter((v,i,a)=>a.indexOf(v)===i).forEach(year=>{const t=svgEl("text",{x:x(year),y:426,"text-anchor":"middle",class:"axis-label"},svg);t.textContent=year})}
+function renderTable(rows,s){$("#profile-table").innerHTML=rows.map(r=>{const p=DATA[DATA.indexOf(r)-1],g=p&&p[s.index]?(r[s.index]/p[s.index]-1)*100:null;return`<tr><td>${r[0]}</td><td>${r[s.index].toLocaleString()}</td><td>${pct(r[s.index],r[6]).toFixed(2)}%</td><td>${g===null?"—":`${g>=0?"+":""}${g.toFixed(1)}%`}</td></tr>`}).join("")}
+function exportView(){const s=SERIES.find(x=>x.id===state.source),rows=DATA.filter(r=>r[0]>=state.from&&r[0]<=state.to),csv=["Year,Source,Supply_ktoe,Share_percent,Annual_growth_percent",...rows.map(r=>{const p=DATA[DATA.indexOf(r)-1],g=p&&p[s.index]?(r[s.index]/p[s.index]-1)*100:"";return`${r[0]},${s.name},${r[s.index]},${pct(r[s.index],r[6]).toFixed(3)},${g===""?"":g.toFixed(3)}`})].join("\n"),a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));a.download=`ghana-${s.id}-${state.from}-${state.to}.csv`;a.click();URL.revokeObjectURL(a.href)}
+function renderAudience(key){const l=AUDIENCES[key],p=$(".lens-panel");p.innerHTML=`<p class="lens-kicker">${l.kicker}</p><h3>${l.title}</h3><p>${l.body}</p><div class="lens-metrics">${l.metrics.map(m=>`<div><span>${m[0]}</span><strong>${m[1]}</strong><small>${m[2]}</small></div>`).join("")}</div><ul>${l.points.map(x=>`<li>${x}</li>`).join("")}</ul><small>${l.note}</small>`}
+document.querySelectorAll(".lens-tabs button").forEach(b=>b.onclick=()=>{document.querySelectorAll(".lens-tabs button").forEach(x=>x.setAttribute("aria-selected",x===b));renderAudience(b.dataset.lens)});
+function drawOverview(){const svg=$("#total-chart"),max=14000,m={l:30,r:18,t:22,b:30},w=700-m.l-m.r,h=280-m.t-m.b,x=y=>m.l+(y-2000)/24*w,Y=v=>m.t+h-v/max*h;[0,7000,14000].forEach(v=>svgEl("line",{x1:m.l,y1:Y(v),x2:682,y2:Y(v),class:"grid-line"},svg));const pts=DATA.map(r=>`${x(r[0])},${Y(r[6])}`).join(" L ");svgEl("path",{d:`M ${x(2000)},${Y(0)} L ${pts} L ${x(2024)},${Y(0)} Z`,class:"total-area"},svg);svgEl("path",{d:`M ${pts}`,class:"total-line"},svg);[2000,2012,2024].forEach(y=>{const t=svgEl("text",{x:x(y),y:272,"text-anchor":"middle",class:"axis-label"},svg);t.textContent=y});const latest=DATA.at(-1),stops=[];let c=0;SERIES.forEach(s=>{const sh=pct(latest[s.index],latest[6]);stops.push(`${s.color} ${c}% ${c+sh}%`);c+=sh});$(".donut").style.background=`conic-gradient(${stops.join(",")})`;$(".mix-legend").innerHTML=SERIES.map(s=>`<li><i style="background:${s.color}"></i><span>${s.name}</span><strong>${pct(latest[s.index],latest[6]).toFixed(1)}%</strong></li>`).join("");const first=DATA[0];$("#shift-bars").innerHTML=SERIES.map(s=>`<div class="shift-row"><span>${s.name}</span><div class="bar-pair"><i style="width:${pct(first[s.index],first[6])}%;background:#cbd5d0"></i><i style="width:${pct(latest[s.index],latest[6])}%;background:${s.color}"></i></div><small>${pct(first[s.index],first[6]).toFixed(1)}% → ${pct(latest[s.index],latest[6]).toFixed(1)}%</small></div>`).join("")}
+function initMotion(){if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;const o=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("revealed");o.unobserve(e.target)}}),{threshold:.12});document.querySelectorAll("section,.insight-grid article").forEach(el=>{el.classList.add("reveal");o.observe(el)})}
+initSourceNav();renderProfile();drawOverview();initMotion();

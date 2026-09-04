@@ -16,7 +16,7 @@
     <nav aria-label="Primary navigation">
       <a href="#story">Story</a>
       <a href="#dashboard">Dashboard</a>
-      <a href="#explorer">Explorer</a>
+      <a href="#explorer">Source profiles</a>
       <a href="#insights">Insights</a>
       <a href="#method">Method</a>
     </nav>
@@ -76,6 +76,12 @@
         <p class="lens-kicker">INVESTMENT SIGNAL</p>
         <h3>Demand growth is clear. The opportunity is in how future supply is met.</h3>
         <p>Total energy supply increased by 106% between 2000 and 2024. Solar’s reported contribution remains very small, signalling room for deeper investigation into renewable generation, grid readiness, financing and project pipelines.</p>
+        <div class="lens-metrics">
+          <div><span>Market expansion</span><strong>+106%</strong><small>Total supply, 2000–2024</small></div>
+          <div><span>Recent momentum</span><strong>+5.9%</strong><small>Total supply, 2023–2024</small></div>
+          <div><span>Solar position</span><strong>0.11%</strong><small>Share of 2024 supply</small></div>
+          <div><span>Oil + gas exposure</span><strong>64.4%</strong><small>Share of 2024 supply</small></div>
+        </div>
         <ul><li>Track the fastest-growing supply sources</li><li>Identify underrepresented technologies</li><li>Combine with tariffs, demand and project data before investing</li></ul>
         <small>Energy-supply statistics are a screening signal, not investment advice.</small>
       </div>
@@ -102,29 +108,45 @@
     <section class="explorer" id="explorer" aria-labelledby="explorer-title">
       <div class="section-heading">
         <div>
-          <p class="eyebrow">DATA EXPLORER</p>
-          <h2 id="explorer-title">Total energy supply by source</h2>
+          <p class="eyebrow">SOURCE PROFILES</p>
+          <h2 id="explorer-title">Investigate one energy source at a time</h2>
         </div>
-        <div class="metric-toggle" role="group" aria-label="Display metric">
-          <button class="active" data-mode="value" aria-pressed="true">ktoe</button>
-          <button data-mode="share" aria-pressed="false">Share</button>
-        </div>
+        <p>Inspired by renewable-energy data portals: choose a technology, metric, period and chart view.</p>
       </div>
 
-      <div class="source-controls" role="group" aria-label="Energy sources"></div>
-      <div class="chart-wrap">
-        <div class="chart-scale" aria-hidden="true"></div>
-        <svg id="energy-chart" viewBox="0 0 1000 440" role="img" aria-labelledby="chart-title chart-desc">
-          <title id="chart-title">Ghana total energy supply by source from 2000 to 2024</title>
-          <desc id="chart-desc">Interactive line chart comparing oil, natural gas, hydro, solar and biomass.</desc>
-        </svg>
-        <div id="tooltip" class="tooltip" hidden></div>
+      <div class="source-nav" role="tablist" aria-label="Select an energy source"></div>
+      <div class="filter-bar" aria-label="Dashboard filters">
+        <label>Metric<select id="metric-select"><option value="value">Supply (ktoe)</option><option value="share">Share of total (%)</option><option value="growth">Annual growth (%)</option></select></label>
+        <label>Chart<select id="chart-select"><option value="area">Area</option><option value="line">Line</option><option value="bar">Columns</option></select></label>
+        <label>From<select id="from-year"></select></label>
+        <label>To<select id="to-year"></select></label>
+        <button id="reset-filters" type="button">Reset filters</button>
       </div>
-      <div class="range-row">
-        <label for="start-year">Start year <output id="start-output">2000</output></label>
-        <input id="start-year" type="range" min="2000" max="2023" value="2000">
-        <p id="range-summary">Showing 2000–2024</p>
+
+      <div class="profile-head">
+        <div><p class="profile-kicker" id="profile-kicker">SOLAR PROFILE</p><h3 id="profile-title">Solar energy supply</h3><p id="profile-story"></p></div>
+        <button class="export-filtered" id="export-filtered" type="button">Download this view</button>
       </div>
+      <div class="profile-kpis" aria-label="Selected source indicators"></div>
+      <div class="profile-layout">
+        <article class="profile-chart-card">
+          <div class="chart-caption"><strong id="chart-caption">Solar supply over time</strong><span id="chart-period">2000–2024</span></div>
+          <div class="chart-wrap">
+            <svg id="energy-chart" viewBox="0 0 1000 440" role="img" aria-labelledby="chart-title chart-desc">
+              <title id="chart-title">Selected energy source over time</title>
+              <desc id="chart-desc">Interactive chart. Use the controls above to change source, metric, period and chart type.</desc>
+            </svg>
+            <div id="tooltip" class="tooltip" hidden></div>
+          </div>
+        </article>
+        <aside class="decision-panel">
+          <span class="panel-label">HOW TO READ THIS</span>
+          <h3 id="decision-title">What the solar series can tell you</h3>
+          <div id="decision-content"></div>
+          <button id="toggle-table" type="button" aria-expanded="false">View underlying data</button>
+        </aside>
+      </div>
+      <div class="data-table-wrap" hidden><table><thead><tr><th>Year</th><th>Supply (ktoe)</th><th>Share</th><th>Annual growth</th></tr></thead><tbody id="profile-table"></tbody></table></div>
       <p class="source-note">Source: Energy Commission of Ghana, <cite>2025 National Energy Statistical Bulletin</cite>, Table 2.1, page 3. Values are reported in thousand tonnes of oil equivalent (ktoe).</p>
     </section>
 
