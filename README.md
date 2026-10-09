@@ -10,6 +10,7 @@ The first release tells the story of Ghana's changing total energy supply from 2
 - audience lenses for investors, policymakers, students and analysts;
 - an intelligence dashboard with headline indicators, trend, mix and structural-change views;
 - an interactive line chart with absolute and percentage views;
+- a Ghana-first global electricity benchmark with connected maps, peer comparisons, technology filters and policy-learning notes;
 - energy-source filters and a selectable date range;
 - three evidence-based observations; and
 - a machine-readable CSV download.

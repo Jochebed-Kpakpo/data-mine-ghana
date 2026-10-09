@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Compare Ghana's electricity transition with selected global peers using traceable international data.">
+  <title>Global Benchmark | Data Mine Ghana</title>
+  <link rel="stylesheet" href="site.css">
+  <link rel="stylesheet" href="global-benchmark.css">
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+</head>
+<body>
+  <header class="nav">
+    <a class="logo" href="index.html"><span>DM</span>Data Mine <b>Ghana</b></a>
+    <button class="menu" aria-label="Open navigation">Menu</button>
+    <nav>
+      <a href="story.html">Energy story</a>
+      <a href="dashboard.html">Ghana dashboard</a>
+      <a class="active" href="global-benchmark.html">Global benchmark</a>
+      <a href="data-library.html">Data library</a>
+    </nav>
+    <a class="nav-cta" href="#benchmark">Compare countries</a>
+  </header>
+
+  <main>
+    <section class="global-hero">
+      <div>
+        <p class="eyebrow">GHANA IN GLOBAL CONTEXT</p>
+        <h1>Look outward.<br>Decide locally.</h1>
+        <p>Compare Ghana with countries confronting similar transition questions. Follow the data, examine the policy mechanism and test what may be adaptable to Ghana.</p>
+        <a class="button primary" href="#benchmark">Open the benchmark</a>
+      </div>
+      <div class="hero-orbit" aria-hidden="true">
+        <span class="orbit orbit-a"></span><span class="orbit orbit-b"></span>
+        <b>GH</b><i class="pin p1"></i><i class="pin p2"></i><i class="pin p3"></i>
+      </div>
+    </section>
+
+    <section class="benchmark-intro">
+      <div><p class="eyebrow">THE QUESTION</p><h2>Who is moving faster, why, and what can Ghana adapt?</h2></div>
+      <p>This is not a ranking table. It is a comparison workspace that separates measurable outcomes from the policies, institutions and investments that may have contributed to them.</p>
+    </section>
+
+    <section class="benchmark" id="benchmark">
+      <aside class="benchmark-controls">
+        <div class="control-heading"><span>01</span><h2>Build a comparison</h2></div>
+        <label>Indicator
+          <select id="indicator">
+            <option value="share">Share of generation (%)</option>
+            <option value="generation">Generation (TWh)</option>
+            <option value="capacity">Capacity (GW)</option>
+            <option value="intensity">Emissions intensity (gCO₂e/kWh)</option>
+          </select>
+        </label>
+        <label>Technology
+          <select id="technology">
+            <option value="Renewables">All renewables</option>
+            <option value="Solar">Solar</option>
+            <option value="Wind">Wind</option>
+            <option value="Hydro">Hydro</option>
+            <option value="Bioenergy">Bioenergy</option>
+            <option value="Geothermal">Geothermal</option>
+            <option value="Fossil">Fossil generation</option>
+            <option value="Total generation">Whole power system</option>
+          </select>
+        </label>
+        <fieldset><legend>Comparison countries</legend><div id="country-options" class="country-options"></div></fieldset>
+        <button class="reset" id="reset-global">Reset comparison</button>
+        <p class="control-note">Ghana remains the anchor. Select up to three peers.</p>
+      </aside>
+
+      <div class="benchmark-workspace">
+        <div class="benchmark-kpis" id="global-kpis"></div>
+        <article class="global-card map-card">
+          <div class="card-head"><div><span>GLOBAL VIEW</span><h2 id="map-title">Renewable electricity share</h2></div><strong id="map-year">2024</strong></div>
+          <div id="world-map" class="plot map-plot" aria-label="Interactive global electricity map"></div>
+          <p class="interaction-note">Select a country on the map to add or remove it from the comparison.</p>
+        </article>
+
+        <article class="global-card trend-card">
+          <div class="card-head"><div><span>CONNECTED TREND</span><h2 id="trend-title">Ghana versus selected peers</h2></div><button id="download-global" class="download-button">Download view</button></div>
+          <div id="global-trend" class="plot" aria-label="Country comparison trend chart"></div>
+          <div class="global-range">
+            <div class="range-head"><span>Drag through time</span><strong id="global-range-label">2000–2024</strong></div>
+            <div class="range-inputs"><input id="global-from" type="range" min="2000" max="2025" value="2000" aria-label="Comparison start year"><input id="global-to" type="range" min="2000" max="2025" value="2024" aria-label="Comparison end year"></div>
+            <div class="range-ends"><span>2000</span><span>2025</span></div>
+          </div>
+        </article>
+
+        <div class="benchmark-grid">
+          <article class="global-card"><div class="card-head"><div><span>LATEST COMPARISON</span><h2>Position at a glance</h2></div></div><div id="peer-bars" class="plot compact-plot"></div></article>
+          <article class="global-card insight-card"><span class="insight-label">WHAT THE EVIDENCE SAYS</span><h2 id="global-insight-title">Ghana is the reference point.</h2><p id="global-insight"></p><div class="quality-note">Different reporting years are shown transparently. Missing observations are never interpolated.</div></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="lesson-section">
+      <div class="lesson-heading"><p class="eyebrow">FROM COMPARISON TO ACTION</p><h2>What could Ghana examine more closely?</h2><p>Measured performance is paired with a documented policy or delivery mechanism. These are starting points for investigation, not automatic prescriptions.</p></div>
+      <div class="lesson-tabs" id="lesson-tabs"></div>
+      <article class="lesson-panel" id="lesson-panel"></article>
+    </section>
+
+    <section class="method-strip">
+      <div><span>DATA</span><strong>Ember Yearly Electricity Data</strong><p>Generation, capacity, shares and emissions indicators.</p></div>
+      <div><span>COVERAGE</span><strong>2000–2025</strong><p>Latest available year differs by country.</p></div>
+      <div><span>LICENCE</span><strong>CC BY 4.0</strong><p>Source attribution retained in exports.</p></div>
+      <a href="methodology.html">Read the methodology →</a>
+    </section>
+  </main>
+
+  <footer><div><a class="logo inverse" href="index.html"><span>DM</span>Data Mine Ghana</a><p>Ghana first. Globally informed. Evidence led.</p></div><div class="footer-links"><a href="dashboard.html">Ghana dashboard</a><a href="global-benchmark.html">Global benchmark</a><a href="data-library.html">Data library</a><a href="methodology.html">Methodology</a></div></footer>
+  <script src="nav.js"></script>
+  <script src="global-benchmark.js"></script>
+</body>
+</html>
